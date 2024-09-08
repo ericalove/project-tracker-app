@@ -48,12 +48,16 @@ export const updateProjects = async (req, res) => {
 
 export const deleteProjects = async (req, res) => {
   const {id} = req.params
-  console.log("id:", id);
+
+  if(!mongoose.Types.ObjectId.isValid(id)){
+    return res.status(404).json({success:false, message: "Invalid Project Id"});
+  }
+
   try{
     await Project.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: "Project deleted!" });
   } catch (error) {
     console.log("error in deleting project:", error.message);
-    res.status(404).json({ success: false, message: "Project not found."});
+    res.status(500).json({ success: false, message: "Server Error"});
   }
 };
